@@ -1,4 +1,4 @@
-//pract-4a
+///////////////////////////////////////////////pract-4a/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //index.jsp
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <html><head><title> JSP Page</title></head>
@@ -20,7 +20,7 @@
     </body>
 </html>
 
-//pract4b
+/////////////////////////////////////////////////////////pract4b//////////////////////////////////////////////////////////////////////////////////////////////////////
 //index.jsp
 <!DOCTYPE html>
 <html>
@@ -117,3 +117,175 @@ Hobbies<b>:
             }
         }
     %>
+
+/////////////////////////////////////////////////////////////pract 4 c///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//index.jsp       
+<!DOCTYPE html>
+<html>
+<head>
+<title>Home</title>
+</head>
+<body>
+<h2>Registration & Login System</h2>
+<a href="register.jsp">Register</a>
+<br><br>
+<a href="login.jsp">Login</a>
+</body>
+</html>
+
+// resitor.jsp
+        <%@page import="java.sql.*"%>
+<%@page import="db.DBConnection"%>
+<%
+String msg="";
+if(request.getParameter("register")!=null)
+{
+String username=request.getParameter("username");
+String password=request.getParameter("password");
+Connection con=DBConnection.getConnection();
+PreparedStatement ps=con.prepareStatement(
+"insert into users(username,password) values(?,?)");
+ps.setString(1,username);
+ps.setString(2,password);
+int i=ps.executeUpdate();
+if(i>0)
+msg="Registration Successful!";
+else
+msg="Registration Failed";
+}
+%>
+<!DOCTYPE html>
+<html>
+<head>
+<title>Register</title>
+</head>
+<body>
+<h2>User Registration</h2>
+<form method="post">
+Username
+<input type="text" name="username">
+<br><br>
+Password
+<input type="password" name="password">
+<br><br>
+<input type="submit" name="register" value="Register">
+</form>
+<br>
+<%=msg%>
+<br><br>
+<a href="login.jsp">Go to Login</a>
+</body>
+</html>
+
+
+//login.jsp
+<%@page import="java.sql.*"%>
+<%@page import="db.DBConnection"%>
+<%
+if(request.getParameter("login")!=null)
+{
+String username=request.getParameter("username");
+String password=request.getParameter("password");
+Connection con=DBConnection.getConnection();
+PreparedStatement ps=con.prepareStatement(
+"select * from users where username=? and password=?"
+);
+ps.setString(1,username);
+ps.setString(2,password);
+ResultSet rs=ps.executeQuery();
+if(rs.next())
+{
+session.setAttribute("user",username);
+response.sendRedirect("success.jsp")
+}
+else
+{
+response.sendRedirect("error.jsp");
+}
+}
+%>
+<!DOCTYPE html>
+<html>
+<head>
+<title>Login</title>
+</head>
+<body>
+<h2>User Login</h2>
+<form method="post">
+Username
+<input type="text" name="username">
+<br><br>
+Password
+<input type="password" name="password">
+<br><br>
+<input type="submit" name="login" value="Login">
+</form>
+</body>
+</html>
+
+//success.jsp
+<%
+String user=(String)session.getAttribute("user");
+if(user==null)
+{
+response.sendRedirect("login.jsp");
+return;
+}
+%>
+<!DOCTYPE html>
+<html>
+<head>
+<title>Success</title>
+</head>
+<body>
+<h1>Login Successful</h1>
+<h2>Welcome <%=user%></h2>
+</body>
+</html>
+(error.jsp):
+
+//error.jsp
+<!DOCTYPE html>
+<html>
+<head>
+<title>Error</title>
+</head>
+<body>
+<h2>Invalid Username or Password</h2>
+<a href="login.jsp">Try Again</a>
+</body>
+</html>
+
+//DbConnection:
+package db;
+import java.sql.Connection;
+import java.sql.DriverManager;
+public class DBConnection {
+    public static Connection getConnection() {
+        Connection con = null;
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            con = DriverManager.getConnection(
+                    "jdbc:mysql://localhost:3306/studentdb",
+                    "root",
+                    "mysql_2026");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return con;
+    }
+}
+
+//mysql
+CREATE DATABASE studentdb;
+USE studentdb;
+CREATE TABLE users
+(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(50) UNIQUE,
+    password VARCHAR(50)
+);
+
+
+
+
