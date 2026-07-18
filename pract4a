@@ -1,0 +1,96 @@
+//index.jsp
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta https-equiv="Content-Type" content="text/html;charset=UTF-8">
+        <title>JSP Registration</title>
+    </head>
+    <body>
+        <h1>Registration Form</h1>
+        <form action="val.jsp" method="post">
+            <table style="width:50%">
+                <tr>
+                    <td>Full Name</td>
+                    <td><input type="text" name="fullname"/></td>
+                </tr><tr>
+                    <td>Age</td>
+                    <td><input type="text" name="age"/></td>
+                </tr><tr>
+                    <td>E-Mail</td>
+                    <td><input type="text" name="email" size="20"/></td>
+                </tr><tr>
+
+                    <td>Gender</td>
+                    <td><input type="radio" name="gender" value="Male">Male
+                        <input type="radio" name="gender" value="Female"/>Female
+                    </td>
+                </tr><tr>
+                    <td>Hobbies</td>
+                    <td><input type="checkbox" name="hb" value="Acting"/>Acting
+                        <input type="checkbox" name="hb" value="Dancing"/>Dancing
+                        <input type="checkbox" name="hb" value="Singing"/>Singing
+                        <input type="checkbox" name="hb" value="Drawing"/>Drawing
+                    </td>
+                </tr>
+            </table>
+            <input type="submit" value="Register"/>
+        </form>
+    </body>
+</html>
+
+//web.xml
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-
+app_3_1.xsd"
+
+         version="3.1">
+    <welcome-file-list>
+        <welcome-file>index.jsp</welcome-file>
+    </welcome-file-list>
+</web-app>
+
+//val.jsp
+<%@page language="java" contentType="text/html" pageEncoding="UTF-8" %>
+<%!
+    int ageInNumbers;
+    private static final String EMAIL_REGEX = "^[\\w-\\+]+(\\.[\\w]+)*@[\\w-]+(\\.[\\w]+)*(\\.[a-z]{2,})$";
+%>
+<%
+    String name = request.getParameter("fullname");
+    String age = request.getParameter("age");
+    String email = request.getParameter("email");
+    String gender = request.getParameter("gender");
+    String hb[] = request.getParameterValues("hb");
+    if (name == null || name.isEmpty() || age == null || age.isEmpty() || email == null || email.isEmpty() || gender
+            == null || gender.isEmpty()) {
+        out.println("<font color=red>Please fill all the fields</font><br>");
+    }
+    if (!email.matches(EMAIL_REGEX)) {
+        out.println("<font color=red>Correct Your Email Address</font><br>");
+    }
+    try {
+        ageInNumbers = Integer.parseInt(age.trim());
+    } catch (NumberFormatException e) {
+        out.println("<font color=red>Age must be numbers</font><br>");
+    }
+    if (ageInNumbers < 18 || ageInNumbers > 60) {
+        out.println("<font color=red>Age must be between 18 and 60</font><br>");
+    }
+%>
+Your Extended Information is as follows:<br><br>
+Full Name<b>:<%=name%></b><br>
+Age<b>:<%=age%></b><br>
+EMail<b>:<%=email%></b><br>
+Gender<b>:<%=gender%></b><br>
+
+Hobbies<b>:
+    <%
+        if (hb != null && hb.length != 0) {
+            for (int i = 0; i < hb.length; i++) {
+                out.println(hb[i]);
+            }
+        }
+    %>
