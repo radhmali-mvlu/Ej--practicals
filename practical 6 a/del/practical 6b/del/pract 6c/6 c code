@@ -1,0 +1,21 @@
+crete a index.jsp file
+and sql run the code
+
+CREATE DATABASE ecommerce;
+USE ecommerce;
+Database changed
+ CREATE TABLE product (
+       product_id INT PRIMARY KEY,
+       product_name VARCHAR(100),
+       category VARCHAR(50),
+      brand VARCHAR(50),
+      price DECIMAL(10,2),
+      quantity INT,
+      rating DECIMAL(2,1),
+      discount DECIMAL(5,2),
+      description VARCHAR(255)
+     );
+
+and add the jar file in library 
+abd run it
+
